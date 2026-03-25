@@ -16,6 +16,7 @@ module.exports = withModuleFederationPlugin({
   shared: {
     '@angular/core': { singleton: true, strictVersion: false },
     '@angular/common': { singleton: true, strictVersion: false },
+    '@angular/common/http': { singleton: true, strictVersion: false },
     '@angular/router': { singleton: true, strictVersion: false },
     'rxjs': { singleton: true, strictVersion: false },
     'primeng': { singleton: true, strictVersion: false }

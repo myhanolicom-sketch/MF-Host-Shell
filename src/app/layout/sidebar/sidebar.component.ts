@@ -11,17 +11,22 @@ import { RouterModule } from '@angular/router';
       <nav class="nav-menu">
         <div class="nav-item">
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-            📊 Dashboard
+            🏠 Inicio
           </a>
         </div>
         <div class="nav-item">
           <a routerLink="/admin" routerLinkActive="active">
-            ⚙️ Admin
+            📋 Trámites
           </a>
         </div>
         <div class="nav-item">
           <a routerLink="/dashboard" routerLinkActive="active">
-            📈 Analytics
+            📊 Servicios
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#contacto">
+            📞 Contacto
           </a>
         </div>
       </nav>
@@ -30,8 +35,9 @@ import { RouterModule } from '@angular/router';
   styles: [`
     .sidebar {
       width: 250px;
-      background: var(--surface-section, #f8f9fa);
-      border-right: 1px solid var(--surface-border, #e9ecef);
+      background: var(--primary-color);
+      color: white;
+      border-right: 1px solid var(--surface-border, #cccccc);
       padding: 1rem 0;
       transition: margin-left 0.3s ease;
       position: relative;
@@ -53,16 +59,16 @@ import { RouterModule } from '@angular/router';
       display: block;
       padding: 1rem 1.5rem;
       text-decoration: none;
-      color: var(--text-color, #333);
+      color: white;
       border-left: 3px solid transparent;
       transition: all 0.2s;
     }
     
     .nav-item a:hover,
     .nav-item a.active {
-      background: var(--primary-color, #3B82F6);
+      background: var(--secondary-color);
       color: white;
-      border-left-color: var(--primary-color, #3B82F6);
+      border-left-color: var(--secondary-color);
     }
     
     @media (max-width: 768px) {

@@ -6,11 +6,13 @@
 }
 
 :root {
-  --primary-color: #3B82F6;
+  --primary-color: #611232;
+  --secondary-color: #8B1F4A;
   --surface-ground: #ffffff;
-  --surface-section: #f8f9fa;
-  --surface-border: #e9ecef;
+  --surface-section: #f0f0f0;
+  --surface-border: #cccccc;
   --text-color: #333333;
+  --text-light: #666666;
 }
 
 html, body {
@@ -66,3 +68,57 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
+
+
+
+
+.p-button.gob-btn {
+  background: linear-gradient(135deg, #2fbac4, #1aa7b0) !important; // gradiente moderno
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important; // más suave y moderno
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(47, 186, 196, 0.3);
+  cursor: pointer;
+  width: 220px; // tamaño centrado fijo
+
+  &:hover {
+    background: linear-gradient(135deg, #1aa7b0, #2fbac4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(47, 186, 196, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 3px 8px rgba(47, 186, 196, 0.3);
+  }
+
+  &:disabled {
+    background-color: #d6c2c9 !important;
+    border-color: #d6c2c9 !important;
+    color: #6c6c6c !important;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+}
+
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+
+
+::ng-deep .p-button.gob-btn {
+  width: 100%;
+  max-width: 250px;
+}
+
+
+
+

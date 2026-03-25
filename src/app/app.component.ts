@@ -3,20 +3,23 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './layout/header/header.component';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { FooterComponent } from './layout/footer/footer.component';
+import { AuthService } from './core/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, SidebarComponent],
+  imports: [CommonModule, RouterModule, HeaderComponent, SidebarComponent, FooterComponent],
   template: `
     <div class="app-container">
-      <app-header (onToggleSidebar)="toggleSidebar()"></app-header>
+      <app-header *ngIf="authService.isAuthenticated()" (onToggleSidebar)="toggleSidebar()"></app-header>
       <div class="main-content">
-        <app-sidebar [isOpen]="sidebarOpen()"></app-sidebar>
-        <div class="content-area">
+        <app-sidebar *ngIf="authService.isAuthenticated()" [isOpen]="sidebarOpen()"></app-sidebar>
+        <div class="content-area" [class.full-width]="!authService.isAuthenticated()">
           <router-outlet></router-outlet>
         </div>
       </div>
+      <app-footer *ngIf="authService.isAuthenticated()"></app-footer>
     </div>
   `,
   styles: [`
@@ -24,7 +27,7 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      background: var(--surface-ground);
+      background: var(--surface-section);
     }
     
     .main-content {
@@ -39,6 +42,10 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
       overflow-y: auto;
     }
     
+    .content-area.full-width {
+      padding: 0;
+    }
+    
     @media (max-width: 768px) {
       .content-area {
         padding: 1rem;
@@ -48,9 +55,11 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
 })
 export class AppComponent {
   title = 'MF Host Shell';
-  sidebarOpen = signal(true);
+  sidebarOpen = signal(false);
+
+  constructor(public authService: AuthService) {}
 
   toggleSidebar() {
-    this.sidebarOpen.update(value => !value);
+    this.sidebarOpen.set(!this.sidebarOpen());
   }
 }

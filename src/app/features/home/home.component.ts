@@ -8,55 +8,17 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="home-container">
       <div class="welcome-card">
-        <h1>Bienvenido al Sistema MicroFrontends</h1>
-        <p class="subtitle">Angular 21 + Module Federation</p>
+        <h1>Bienvenido al Sistema</h1>
         
         <div class="features">
-          <div class="feature-card">
-            <div class="feature-icon">🏗️</div>
-            <h3>Arquitectura Modular</h3>
-            <p>Aplicaciones desacopladas e independientes con Module Federation</p>
-          </div>
+            
           
-          <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3>Componentes Standalone</h3>
-            <p>Angular 21 con componentes standalone y Angular Signals</p>
-          </div>
           
-          <div class="feature-card">
-            <div class="feature-icon">🎨</div>
-            <h3>PrimeNG UI</h3>
-            <p>Componentes profesionales y accesibles con PrimeNG</p>
-          </div>
           
-          <div class="feature-card">
-            <div class="feature-icon">✅</div>
-            <h3>Testing</h3>
-            <p>Pruebas unitarias con Vitest</p>
-          </div>
         </div>
         
         <div class="sections">
-          <section>
-            <h2>Módulos Disponibles</h2>
-            <ul>
-              <li>📊 <strong>Admin</strong> - Gestión de administración</li>
-              <li>📈 <strong>Dashboard</strong> - Analítica y reportes</li>
-            </ul>
-          </section>
           
-          <section>
-            <h2>Tecnologías</h2>
-            <ul>
-              <li>Angular 21.1.4</li>
-              <li>Module Federation (Webpack 5)</li>
-              <li>Angular Signals para State Management</li>
-              <li>PrimeNG + PrimeFlex + PrimeIcons</li>
-              <li>TypeScript 5.5</li>
-              <li>Vitest para Testing</li>
-            </ul>
-          </section>
         </div>
       </div>
     </div>
