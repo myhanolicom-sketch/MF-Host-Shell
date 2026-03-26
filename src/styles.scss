@@ -122,3 +122,15 @@ body {
 
 
 
+:host ::ng-deep .p-password {
+  width: 100%;
+}
+
+:host ::ng-deep .p-password-input {
+  width: 100%;
+  padding-right: 2.5rem; // espacio para el ojito
+}
+
+:host ::ng-deep .p-password .p-password-toggle-mask {
+  right: 0.75rem;
+}

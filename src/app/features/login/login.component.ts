@@ -19,14 +19,21 @@ export class LoginComponent implements OnInit {
   loading = false;
   errorMessage = '';
 
+showPassword = false;
+
+togglePassword() {
+  this.showPassword = !this.showPassword;
+}
+
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
