@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
@@ -10,25 +10,27 @@ import { AuthService } from '../../core/auth.service';
   template: `
     <header class="header">
       <div class="header-content">
-        <div class="logo">
+        <div class="logo-section">
           <img src="https://framework-gb.cdn.gob.mx/gobmx/img/logo_blanco.svg" alt="Gobierno de México" class="logo-img">
-          
+          <h1 class="logo-text">PENSIONISSSTE</h1>
         </div>
-        <div class="logo">
-          
-          <h1>PENSIONISSSTE</h1>
-        </div>
-        <nav class="nav">
+        
+        <button class="menu-toggle" (click)="toggleMenu()" [class.active]="menuOpen()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="nav" [class.open]="menuOpen()">
           <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/admin">Pantalla de Monitoreo</a></li>
-            <li><a href="/dashboard">Administración de Usuarios</a></li>
-            
+            <li><a href="/" (click)="closeMenu()">Inicio</a></li>
+            <li><a href="/admin" (click)="closeMenu()">Pantalla de Monitoreo</a></li>
+            <li><a href="/dashboard" (click)="closeMenu()">Administración de Usuarios</a></li>
           </ul>
         </nav>
+        
         <div class="actions">
           <button class="logout-btn" (click)="logout()" *ngIf="isAuthenticated()">Cerrar Sesión</button>
-          
         </div>
       </div>
     </header>
@@ -51,12 +53,14 @@ import { AuthService } from '../../core/auth.service';
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 2rem;
     }
     
-    .logo {
+    .logo-section {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      flex-shrink: 0;
     }
 
     .logo-img {
@@ -64,12 +68,48 @@ import { AuthService } from '../../core/auth.service';
       width: auto;
     }
 
-    .logo h1 {
+    .logo-text {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       color: white;
+      white-space: nowrap;
     }
     
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      gap: 6px;
+      z-index: 101;
+    }
+
+    .menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(10px, 10px);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(8px, -8px);
+    }
+    
+    .nav {
+      flex: 1;
+    }
+
     .nav ul {
       list-style: none;
       display: flex;
@@ -82,6 +122,7 @@ import { AuthService } from '../../core/auth.service';
       color: white;
       text-decoration: none;
       transition: opacity 0.3s;
+      font-size: 0.95rem;
     }
     
     .nav a:hover {
@@ -92,6 +133,7 @@ import { AuthService } from '../../core/auth.service';
       display: flex;
       align-items: center;
       gap: 1rem;
+      flex-shrink: 0;
     }
 
     .logout-btn {
@@ -109,31 +151,99 @@ import { AuthService } from '../../core/auth.service';
     }
     
     @media (max-width: 768px) {
-      .nav ul {
-        display: none;
+      .header-content {
+        padding: 0 1rem;
+        gap: 1rem;
       }
-      
+
+      .logo-text {
+        font-size: 1rem;
+      }
+
       .menu-toggle {
+        display: flex;
+      }
+
+      .nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary-color);
+        flex-direction: column;
+      }
+
+      .nav.open {
+        display: flex;
+      }
+
+      .nav ul {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+      }
+
+      .nav a {
+        padding: 1rem;
         display: block;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .logout-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-content {
+        padding: 0 0.5rem;
+      }
+
+      .logo-img {
+        height: 32px;
+      }
+
+      .logo-text {
+        font-size: 0.9rem;
+      }
+
+      .nav a {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+      }
+
+      .logout-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
       }
     }
   `]
 })
 export class HeaderComponent {
   @Output() onToggleSidebar = new EventEmitter<void>();
+  menuOpen = signal(false);
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  onToggle() {
-    this.onToggleSidebar.emit();
+  isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  toggleMenu() {
+    this.menuOpen.set(!this.menuOpen());
+  }
+
+  closeMenu() {
+    this.menuOpen.set(false);
   }
 
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
-  }
-
-  isAuthenticated(): boolean {
-    return this.authService.isAuthenticated();
   }
 }

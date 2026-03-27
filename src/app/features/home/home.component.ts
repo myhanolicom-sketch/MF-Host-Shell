@@ -27,6 +27,8 @@ import { CommonModule } from '@angular/common';
     .home-container {
       max-width: 1200px;
       margin: 0 auto;
+      width: 100%;
+      padding: 0;
     }
     
     .welcome-card {
@@ -46,6 +48,52 @@ import { CommonModule } from '@angular/common';
       font-size: 1.1rem;
       color: #666;
       margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .welcome-card {
+        padding: 2rem;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      .subtitle {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .welcome-card {
+        padding: 1.5rem;
+        border-radius: 6px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-card {
+        padding: 1rem;
+        border-radius: 4px;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+      }
     }
     
     .features {

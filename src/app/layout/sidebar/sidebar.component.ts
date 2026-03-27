@@ -39,14 +39,15 @@ import { RouterModule } from '@angular/router';
       color: white;
       border-right: 1px solid var(--surface-border, #cccccc);
       padding: 1rem 0;
-      transition: margin-left 0.3s ease;
+      transition: all 0.3s ease;
       position: relative;
       overflow-y: auto;
       max-height: calc(100vh - 60px);
+      flex-shrink: 0;
     }
     
     .sidebar.closed {
-      margin-left: -250px;
+      display: none;
     }
     
     .nav-menu {
@@ -62,6 +63,7 @@ import { RouterModule } from '@angular/router';
       color: white;
       border-left: 3px solid transparent;
       transition: all 0.2s;
+      word-break: break-word;
     }
     
     .nav-item a:hover,
@@ -71,14 +73,43 @@ import { RouterModule } from '@angular/router';
       border-left-color: var(--secondary-color);
     }
     
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .nav-item a {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+      }
+    }
+
     @media (max-width: 768px) {
       .sidebar {
         position: fixed;
         left: 0;
         top: 60px;
         height: calc(100vh - 60px);
-        z-index: 50;
+        z-index: 40;
         box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        width: 200px;
+      }
+
+      .sidebar.closed {
+        display: none;
+        margin-left: -200px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        width: 100%;
+        max-width: 100vw;
+      }
+
+      .nav-item a {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
       }
     }
   `]
