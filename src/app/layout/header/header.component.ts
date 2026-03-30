@@ -30,7 +30,7 @@ import { AuthService } from '../../core/auth.service';
         </nav>
         
         <div class="actions">
-          <button class="logout-btn" (click)="logout()" *ngIf="isAuthenticated()">Cerrar Sesión</button>
+          <button class="logout-btn" (click)="logout()" *ngIf="isAuthenticated()">Salir</button>
         </div>
       </div>
     </header>
