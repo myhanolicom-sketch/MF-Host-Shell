@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './layout/header/header.component';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { FooterComponent } from './layout/footer/footer.component';
-import { AuthService } from './core/auth.service';
+import { LoginService } from './service/login.service';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +12,14 @@ import { AuthService } from './core/auth.service';
   imports: [CommonModule, RouterModule, HeaderComponent, SidebarComponent, FooterComponent],
   template: `
     <div class="app-container">
-      <app-header *ngIf="authService.isAuthenticated()" (onToggleSidebar)="toggleSidebar()"></app-header>
+      <app-header *ngIf="loginService.isAuthenticated()" (onToggleSidebar)="toggleSidebar()"></app-header>
       <div class="main-content">
-        <app-sidebar *ngIf="authService.isAuthenticated()" [isOpen]="sidebarOpen()"></app-sidebar>
-        <div class="content-area" [class.full-width]="!authService.isAuthenticated()">
+        <app-sidebar *ngIf="loginService.isAuthenticated()" [isOpen]="sidebarOpen()" (toggleMenu)="toggleSidebar()"></app-sidebar>
+        <div class="content-area" [class.full-width]="!loginService.isAuthenticated()">
           <router-outlet></router-outlet>
         </div>
       </div>
-      <app-footer *ngIf="authService.isAuthenticated()"></app-footer>
+      <app-footer *ngIf="loginService.isAuthenticated()"></app-footer>
     </div>
   `,
   styles: [`
@@ -73,9 +73,9 @@ import { AuthService } from './core/auth.service';
 })
 export class AppComponent {
   title = 'MF Host Shell';
-  sidebarOpen = signal(false);
+  sidebarOpen = signal(true);
 
-  constructor(public authService: AuthService) {}
+  constructor(public loginService: LoginService) {}
 
   toggleSidebar() {
     this.sidebarOpen.set(!this.sidebarOpen());

@@ -6,6 +6,9 @@ import { AuthService } from '../../core/auth.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
+import { LoginRequest } from 'src/app/model/loginRequest';
+import { LoginService } from 'src/app/service/login.service';
+import { AuthResponse } from 'src/app/model/authResponse';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +22,8 @@ export class LoginComponent implements OnInit {
   loading = false;
   errorMessage = '';
 
+  loginError:string="";
+
 showPassword = false;
 
 togglePassword() {
@@ -29,7 +34,8 @@ togglePassword() {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private loginService: LoginService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
@@ -42,14 +48,26 @@ togglePassword() {
   }
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      this.loading = true;
-      // Simular login exitoso con cualquier credenciales
-      setTimeout(() => {
-        localStorage.setItem('token', 'dummy-token');
-        this.router.navigate(['/']);
+  if (this.loginForm.valid) {
+    this.loading = true;
+    this.loginError = '';
+
+    this.loginService.login(this.loginForm.value as LoginRequest).subscribe({
+      next: (userData) => {
+        console.log('Usuario simulado autenticado:', userData);
+       // alert(`Bienvenido ${userData.displayName}`);
+      },
+      error: (errorData) => {
+        console.error('Error login simulado', errorData);
+        this.loginError = 'Error al iniciar sesión';
+      },
+      complete: () => {
         this.loading = false;
-      }, 1000); // Simular delay
-    }
+        this.router.navigateByUrl('/');
+        this.loginForm.reset();
+      }
+    });
   }
+}
+
 }

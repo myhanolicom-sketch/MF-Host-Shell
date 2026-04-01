@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
+import { LoginService } from 'src/app/service/login.service';
 
 @Component({
   selector: 'app-header',
@@ -12,14 +13,17 @@ import { AuthService } from '../../core/auth.service';
       <div class="header-content">
         <div class="logo-section">
           <img src="https://framework-gb.cdn.gob.mx/gobmx/img/logo_blanco.svg" alt="Gobierno de México" class="logo-img">
+          
           <h1 class="logo-text">PENSIONISSSTE</h1>
         </div>
         
-        <button class="menu-toggle" (click)="toggleMenu()" [class.active]="menuOpen()">
+        <button class="menu-toggle" (click)="toggleMenu()" [class.active]="menuOpen()" title="Alternar menú">
           <span></span>
           <span></span>
           <span></span>
         </button>
+
+      
 
         <nav class="nav" [class.open]="menuOpen()">
           <ul>
@@ -28,22 +32,63 @@ import { AuthService } from '../../core/auth.service';
             <li><a href="/dashboard" (click)="closeMenu()">Administración de Usuarios</a></li>
           </ul>
         </nav>
-        
+
+
         <div class="actions">
-          <button class="logout-btn" (click)="logout()" *ngIf="isAuthenticated()">Salir</button>
+        <span class="user-email">{{ currentUser?.mail }}</span>
+          <div *ngIf="isAuthenticated()">
+            
+            <button class="logout-btn" (click)="logout()">
+              <i class="pi pi-sign-out"></i>
+              <span class="logout-text">Salir</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
   `,
   styles: [`
+    :host {
+      --primary-dark: #611232;
+      --primary-light: #841a52;
+      --accent-dark: #8a1f58;
+      --accent-light: #c86d9f;
+      --accent: #a22771;
+      --accent-deep: #3e0f31;
+      --text-primary: #ffffff;
+      --text-secondary: #f1e6f2;
+      --text-main: #ffffff;
+      --surface: rgba(255, 255, 255, 0.08);
+      --transition-speed: 0.3s;
+    }
+
     .header {
-      background: var(--primary-color);
-      color: white;
-      padding: 1rem 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
+      color: var(--text-primary);
+      padding: 0.9rem 0;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
       position: sticky;
       top: 0;
       z-index: 100;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .header-content {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.2rem;
+      min-height: 70px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
     }
     
     .header-content {
@@ -71,8 +116,10 @@ import { AuthService } from '../../core/auth.service';
     .logo-text {
       margin: 0;
       font-size: 1.25rem;
-      color: white;
+      color: var(--accent-light);
       white-space: nowrap;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
     
     .menu-toggle {
@@ -84,14 +131,19 @@ import { AuthService } from '../../core/auth.service';
       padding: 0.5rem;
       gap: 6px;
       z-index: 101;
+      transition: all var(--transition-speed);
+    }
+
+    .menu-toggle:hover {
+      opacity: 0.8;
     }
 
     .menu-toggle span {
       width: 25px;
       height: 3px;
-      background: white;
+      background: var(--text-primary);
       border-radius: 2px;
-      transition: all 0.3s ease;
+      transition: all var(--transition-speed);
     }
 
     .menu-toggle.active span:nth-child(1) {
@@ -106,6 +158,43 @@ import { AuthService } from '../../core/auth.service';
       transform: rotate(-45deg) translate(8px, -8px);
     }
     
+    .sidebar-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent-light) 100%);
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 0.55rem 0.75rem;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      transition: all var(--transition-speed);
+      z-index: 101;
+      box-shadow: 0 2px 10px rgba(97, 18, 50, 0.35);
+    }
+
+    .sidebar-toggle[disabled], .sidebar-toggle.disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .sidebar-toggle:hover {
+      background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-dark) 100%);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(97, 18, 50, 0.4);
+    }
+
+    .sidebar-toggle:active {
+      transform: scale(0.98);
+    }
+
+    .sidebar-toggle-icon {
+      display: block;
+      transition: transform var(--transition-speed);
+    }
     .nav {
       flex: 1;
     }
@@ -113,20 +202,38 @@ import { AuthService } from '../../core/auth.service';
     .nav ul {
       list-style: none;
       display: flex;
-      gap: 2rem;
+      gap: 2.5rem;
       margin: 0;
       padding: 0;
     }
     
     .nav a {
-      color: white;
+      color: var(--text-primary);
       text-decoration: none;
-      transition: opacity 0.3s;
+      transition: all var(--transition-speed);
       font-size: 0.95rem;
+      font-weight: 500;
+      position: relative;
+      padding-bottom: 4px;
+    }
+    
+    .nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-dark), var(--accent-light));
+      transition: width var(--transition-speed);
     }
     
     .nav a:hover {
-      opacity: 0.8;
+      color: var(--accent-light);
+    }
+
+    .nav a:hover::after {
+      width: 100%;
     }
     
     .actions {
@@ -136,20 +243,89 @@ import { AuthService } from '../../core/auth.service';
       flex-shrink: 0;
     }
 
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.4rem 0.8rem;
+      background: var(--surface);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 3px 9px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(4px);
+    }
+
+    .user-email {
+      color: var(--text-main);
+      font-size: 0.88rem;
+      white-space: nowrap;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      opacity: 0.95;
+    }
+
     .logout-btn {
-      background: var(--secondary-color);
-      border: 1px solid var(--secondary-color);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  background: transparent; /* 🔥 sin fondo */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  color: #ffffff; /* 🔥 texto blanco */
+
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+
+  cursor: pointer;
+  transition: all var(--transition-speed);
+
+  font-weight: 600;
+  font-size: 0.75rem;
+
+  box-shadow: none; /* opcional: quita sombra */
+}
+
+    .logout-btn:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.12));
+      transform: translateY(-1px);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .logout-icon {
+      font-size: 0.85rem;
+      line-height: 1;
+      opacity: 0.9;
+    }
+
+    .logout-text {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+
     }
 
     .logout-btn:hover {
-      background: #004499;
+       background-color: rgba(255, 255, 255, 0.1); /* leve efecto */
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
     }
     
+    @media (max-width: 1024px) {
+      .sidebar-toggle {
+        display: block;
+      }
+    }
+
     @media (max-width: 768px) {
       .header-content {
         padding: 0 1rem;
@@ -226,12 +402,16 @@ export class HeaderComponent {
   menuOpen = signal(false);
 
   constructor(
-    private authService: AuthService,
+    private loginService: LoginService,
     private router: Router
   ) {}
 
+  get currentUser() {
+    return this.loginService.currentUser;
+  }
+
   isAuthenticated(): boolean {
-    return this.authService.isAuthenticated();
+    return this.loginService.isAuthenticated();
   }
 
   toggleMenu() {
@@ -242,8 +422,12 @@ export class HeaderComponent {
     this.menuOpen.set(false);
   }
 
+  toggleSidebar() {
+    this.onToggleSidebar.emit();
+  }
+
   logout() {
-    this.authService.logout();
+    this.loginService.logout();
     this.router.navigate(['/login']);
   }
 }
